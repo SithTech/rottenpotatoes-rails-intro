@@ -1,6 +1,19 @@
 -#  This file is app/views/movies/index.html.haml
 %h2 All Movies
 
+-#Checkboxes to filter movies by rating
+= form_tag movies_path, :method => :get do
+  Include:
+  - @all_ratings.each_key do |rating|
+    = rating
+    = check_box_tag "ratings[#{rating}]", '1', @selected_ratings.has_key?(rating)
+  = submit_tag 'Refresh'
+  
+
+-#Add some space between the checkboxes and the table
+%h2 
+
+-#Movies table
 %table#movies.table.table-striped.col-md-12
   %thead
     %tr

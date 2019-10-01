@@ -1,5 +1,5 @@
 class MoviesController < ApplicationController
-
+  
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
@@ -11,8 +11,17 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #Get all movies by default
-    @movies = Movie.all
+    @all_ratings = Movie.all_valid_ratings
+    @selected_ratings = params[:ratings]
+    
+    #Get movies with the selected ratings
+    if @selected_ratings
+      @movies = Movie.with_ratings(@selected_ratings.keys)
+    else
+      #If no movie ratings were selected, return all movies 
+      @movies = Movie.with_ratings(@all_ratings.keys)
+      @selected_ratings = @all_ratings
+    end
     
     #Check if I need to sort by the title header
     if params[:title_header]
