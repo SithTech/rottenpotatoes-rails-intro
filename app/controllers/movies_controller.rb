@@ -11,7 +11,20 @@ class MoviesController < ApplicationController
   end
 
   def index
+    #Get all movies by default
     @movies = Movie.all
+    
+    #Check if I need to sort by the title header
+    if params[:title_header]
+      @movies = Movie.order(title: :asc)
+      #@movies = Movie.order(title: :desc)      #Left this here for future reference
+    end
+    
+    #Check if I need to sort by the release date header
+    if params[:release_date_header]
+      @movies = Movie.order(release_date: :asc)
+      #@movies = Movie.order(release_date: :desc)     #Left this here for future reference
+    end
   end
 
   def new
