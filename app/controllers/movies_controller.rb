@@ -11,29 +11,43 @@ class MoviesController < ApplicationController
   end
 
   def index
+    #--------------------------------
+    #For Debug Use Only
+    #session.clear   
+    #--------------------------------
+    
+    #Get a hash of all valid movie ratings from the database
     @all_ratings = Movie.all_valid_ratings
-    @selected_ratings = params[:ratings]
     
-    #Get movies with the selected ratings
-    if @selected_ratings
-      @movies = Movie.with_ratings(@selected_ratings.keys)
+    #--------------------------------
+   
+    #Check for/apply filtered ratings
+    if params[:ratings]
+      session[:filter_ratings] = params[:ratings]
     else
-      #If no movie ratings were selected, return all movies 
-      @movies = Movie.with_ratings(@all_ratings.keys)
-      @selected_ratings = @all_ratings
+      if !session[:filter_ratings]
+        session[:filter_ratings] = @all_ratings
+      end
     end
     
-    #Check if I need to sort by the title header
-    if params[:title_header]
-      @movies = Movie.order(title: :asc)
-      #@movies = Movie.order(title: :desc)      #Left this here for future reference
+    #--------------------------------
+    
+    #Check for/apply sorted header
+    if params[:filter_header]
+      session[:filter_header] = params[:filter_header]
     end
     
-    #Check if I need to sort by the release date header
-    if params[:release_date_header]
-      @movies = Movie.order(release_date: :asc)
-      #@movies = Movie.order(release_date: :desc)     #Left this here for future reference
-    end
+    #--------------------------------
+    
+    #Update the checkboxes to be selected
+    @selected_ratings = session[:filter_ratings]
+    
+    #--------------------------------
+    
+    #Fetch the appropriate movies from the database
+    @movies = (Movie.order(session[:filter_header])).with_ratings(session[:filter_ratings].keys)
+    
+    #--------------------------------
   end
 
   def new
