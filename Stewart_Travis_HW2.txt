@@ -1,0 +1,2 @@
+GitHub: https://github.com/SithTech/rottenpotatoes-rails-intro
+Heroku: http://radiant-bayou-31105.herokuapp.com
